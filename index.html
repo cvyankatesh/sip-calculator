@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SIP Calculator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f4f8;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        height: 100vh;
+        box-sizing: border-box;
+      }
+
+      .container {
+        background-color: #ffffff;
+        padding: 20px 40px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 100%;
+        margin-right: 20px;
+      }
+
+      .results {
+        background-color: #ffffff;
+        padding: 20px 40px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 24px;
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: #555;
+        font-weight: bold;
+      }
+
+      input[type='number'] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      h2 {
+        font-size: 20px;
+        color: #333;
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      p {
+        font-size: 16px;
+        color: #333;
+        background-color: #f7f9fc;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>SIP Calculator</h1>
+      <div class="form-group">
+        <label for="sipAmount">SIP Amount per month (₹):</label>
+        <input type="number" id="sipAmount" value="5000" />
+      </div>
+      <div class="form-group">
+        <label for="xirr">Expected Annual Return (XIRR) (%):</label>
+        <input type="number" id="xirr" value="14" step="0.1" />
+      </div>
+      <div class="form-group">
+        <label for="expenseRatio">Expense Ratio (%):</label>
+        <input type="number" id="expenseRatio" value="0.5" step="0.1" />
+      </div>
+      <div class="form-group">
+        <label for="ltcgTax">LTCG Tax Rate (%):</label>
+        <input type="number" id="ltcgTax" value="12.5" step="0.1" />
+      </div>
+      <div class="form-group">
+        <label for="inflationRate">Inflation Rate (%):</label>
+        <input type="number" id="inflationRate" value="4" step="0.1" />
+      </div>
+      <div class="form-group">
+        <label for="years">Investment Duration (years):</label>
+        <input type="number" id="years" value="30" />
+      </div>
+      <button onclick="calculateSIP()">Calculate</button>
+    </div>
+
+    <div class="results">
+      <h2>Results</h2>
+      <p id="investedAmount">Total Invested Amount:</p>
+      <p id="futureValue">Future Value (Nominal):</p>
+      <p id="absoluteReturn">Absolute Return:</p>
+      <p id="absoluteReturnPercentage">Absolute Return Percentage:</p>
+      <p id="adjustedFutureValue">Future Value (After Expense Ratio):</p>
+      <p id="postTaxFutureValue">Future Value (After LTCG Tax):</p>
+      <p id="realFutureValue">Real Future Value (After Inflation):</p>
+    </div>
+
+    <script>
+      // Function to format numbers in Indian currency style
+      function formatNumberInIndianStyle(num) {
+        return num.toLocaleString('en-IN', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+      }
+
+      function calculateSIP() {
+        const sipAmount = parseFloat(
+          document.getElementById('sipAmount').value
+        );
+        const annualXirr =
+          parseFloat(document.getElementById('xirr').value) / 100;
+        const expenseRatio =
+          parseFloat(document.getElementById('expenseRatio').value) / 100;
+        const ltcgTaxRate =
+          parseFloat(document.getElementById('ltcgTax').value) / 100;
+        const inflationRate =
+          parseFloat(document.getElementById('inflationRate').value) / 100;
+        const years = parseInt(document.getElementById('years').value);
+        const months = years * 12;
+
+        // Calculate monthly XIRR
+        const monthlyXirr = annualXirr / 12;
+
+        // Step 1: Calculate Future Value using XIRR formula
+        let futureValue =
+          sipAmount *
+          (((Math.pow(1 + monthlyXirr, months) - 1) / monthlyXirr) *
+            (1 + monthlyXirr));
+
+        // Invested Amount
+        let investedAmount = sipAmount * months;
+
+        // Absolute Return (before any adjustment)
+        let absoluteReturn = futureValue - investedAmount;
+
+        // Absolute Return Percentage (before any adjustment)
+        let absoluteReturnPercentage = (absoluteReturn / investedAmount) * 100;
+
+        // Step 2: Adjust for Expense Ratio
+        let adjustedFutureValue = futureValue * (1 - expenseRatio);
+
+        // Step 3: Adjust for LTCG Tax
+        let postTaxFutureValue = adjustedFutureValue * (1 - ltcgTaxRate);
+
+        // Step 4: Adjust for Inflation to get Real Future Value
+        let realFutureValue =
+          postTaxFutureValue / Math.pow(1 + inflationRate, years);
+
+        // Display results with Indian style formatting
+        document.getElementById(
+          'investedAmount'
+        ).innerText = `Total Invested Amount: ₹${formatNumberInIndianStyle(
+          investedAmount
+        )}`;
+        document.getElementById(
+          'futureValue'
+        ).innerText = `Future Value (Nominal): ₹${formatNumberInIndianStyle(
+          futureValue
+        )}`;
+        document.getElementById(
+          'absoluteReturn'
+        ).innerText = `Absolute Return: ₹${formatNumberInIndianStyle(
+          absoluteReturn
+        )}`;
+        document.getElementById(
+          'absoluteReturnPercentage'
+        ).innerText = `Absolute Return Percentage: ${absoluteReturnPercentage.toFixed(
+          2
+        )}%`;
+        document.getElementById(
+          'adjustedFutureValue'
+        ).innerText = `Future Value (After Expense Ratio): ₹${formatNumberInIndianStyle(
+          adjustedFutureValue
+        )}`;
+        document.getElementById(
+          'postTaxFutureValue'
+        ).innerText = `Future Value (After LTCG Tax): ₹${formatNumberInIndianStyle(
+          postTaxFutureValue
+        )}`;
+        document.getElementById(
+          'realFutureValue'
+        ).innerText = `Real Future Value (After Inflation): ₹${formatNumberInIndianStyle(
+          realFutureValue
+        )}`;
+      }
+    </script>
+  </body>
+</html>
