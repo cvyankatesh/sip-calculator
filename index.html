@@ -193,39 +193,39 @@
         // Display results with Indian style formatting
         document.getElementById(
           'investedAmount'
-        ).innerText = `Total Invested Amount: ₹${formatNumberInIndianStyle(
+        ).innerHTML = `Total Invested Amount: <strong>₹${formatNumberInIndianStyle(
           investedAmount
-        )}`;
+        )}</strong>`;
         document.getElementById(
           'futureValue'
-        ).innerText = `Future Value (Nominal): ₹${formatNumberInIndianStyle(
+        ).innerHTML = `Future Value (Nominal): <strong>₹${formatNumberInIndianStyle(
           futureValue
-        )}`;
+        )}</strong>`;
         document.getElementById(
           'absoluteReturn'
-        ).innerText = `Absolute Return: ₹${formatNumberInIndianStyle(
+        ).innerHTML = `Absolute Return: <strong>₹${formatNumberInIndianStyle(
           absoluteReturn
-        )}`;
+        )}</strong>`;
         document.getElementById(
           'absoluteReturnPercentage'
-        ).innerText = `Absolute Return Percentage: ${absoluteReturnPercentage.toFixed(
+        ).innerHTML = `Absolute Return Percentage: <strong>${absoluteReturnPercentage.toFixed(
           2
-        )}%`;
+        )}%</strong>`;
         document.getElementById(
           'adjustedFutureValue'
-        ).innerText = `Future Value (After Expense Ratio): ₹${formatNumberInIndianStyle(
+        ).innerHTML = `Future Value (After Expense Ratio): <strong>₹${formatNumberInIndianStyle(
           adjustedFutureValue
-        )}`;
+        )}</strong>`;
         document.getElementById(
           'postTaxFutureValue'
-        ).innerText = `Future Value (After LTCG Tax): ₹${formatNumberInIndianStyle(
+        ).innerHTML = `Future Value (After LTCG Tax): <strong>₹${formatNumberInIndianStyle(
           postTaxFutureValue
-        )}`;
+        )}</strong>`;
         document.getElementById(
           'realFutureValue'
-        ).innerText = `Real Future Value (After Inflation): ₹${formatNumberInIndianStyle(
+        ).innerHTML = `Real Future Value (After Inflation): <strong>₹${formatNumberInIndianStyle(
           realFutureValue
-        )}`;
+        )}</strong>`;
       }
     </script>
   </body>
